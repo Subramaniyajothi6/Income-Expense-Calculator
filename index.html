@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Income Expense Calculator</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+    <header class="container">
+        <h1>Income Expense Calculator</h1>
+    </header>
+
+
+    <main>
+        <section class="container">
+
+
+            <div class="boxs">
+
+
+                <div class="box " id="income-box">
+                    <h2>Income</h2>
+                    <div>
+
+                        <ul class="income-list">
+
+
+                        </ul>
+
+                        <div class="add">
+                            <input type="text" id="add-income" placeholder="Add Income">
+                            <input type="text" id="add-amount" placeholder="Amount">
+                            <button id="add-income-btn" type="submit">Add</button>
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="box " id="expense-box">
+                    <h2>Expense</h2>
+                    <div>
+
+                        <ul class="expense-list">
+
+
+                        </ul>
+
+                        <div class="add">
+                            <input type="text" id="add-expense" placeholder="Add Expense">
+                            <input type="text" id="add-e-amount" placeholder="Amount">
+                            <button id="add-expense-btn" type="submit">Add</button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="box" id="budget-box">
+                    <h2>Available Budget</h2>
+                    <span id="budget-amount">$0.00</span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <script src="script.js"></script>
+</body>
+
+</html>
