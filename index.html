@@ -8,70 +8,48 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-purple-600 min-h-screen p-6 text-white">
+<body class="bg-purple-200 min-h-screen p-4">
 
-    <header class="text-center mb-6">
-        <h1 class="text-3xl font-bold text-pink-100">Income Expense Calculator</h1>
+    <header class="text-center text-3xl font-bold text-white mb-6">
+        Income Expense Calculator
     </header>
 
-    <main class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6 text-black">
+    <div class="flex justify-center mb-4 space-x-4">
+        <label><input type="radio" name="filter" value="all" checked class="mr-1">All</label>
+        <label><input type="radio" name="filter" value="income" class="mr-1">Income</label>
+        <label><input type="radio" name="filter" value="expense" class="mr-1">Expense</label>
+    </div>
 
-        
-        <div class="flex justify-center gap-4 mb-6">
-            <label class="flex items-center gap-2">
-                <input type="radio" name="filter" value="all" checked class="accent-purple-600" />
-                All
-            </label>
-            <label class="flex items-center gap-2">
-                <input type="radio" name="filter" value="income" class="accent-purple-600" />
-                Income
-            </label>
-            <label class="flex items-center gap-2">
-                <input type="radio" name="filter" value="expense" class="accent-purple-600" />
-                Expense
-            </label>
+    <div id="boxes-wrapper" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+
+        <div id="income-box" class="bg-white p-6 rounded-lg shadow w-full">
+            <h2 class="text-xl font-bold mb-4 text-center">Income</h2>
+            <ul class="income-list space-y-2 mb-4"></ul>
+            <input id="add-income" type="text" placeholder="Description" class="w-full mb-2 p-2 rounded border" />
+            <input id="add-amount" type="text" placeholder="Amount" class="w-full mb-2 p-2 rounded border" />
+            <button id="add-income-btn" class="w-full bg-green-600 text-white py-2 rounded">Add Income</button>
         </div>
 
-        
-        <div id="budget-box" class="text-center mb-6">
-            <h2 class="text-xl font-semibold mb-2">Available Budget</h2>
-            <span id="budget-amount" class="text-2xl font-bold text-purple-800">$0.00</span>
+
+        <div id="expense-box" class="bg-white p-6 rounded-lg shadow w-full">
+            <h2 class="text-xl font-bold mb-4 text-center">Expense</h2>
+            <ul class="expense-list space-y-2 mb-4"></ul>
+            <input id="add-expense" type="text" placeholder="Description" class="w-full mb-2 p-2 rounded border" />
+            <input id="add-e-amount" type="text" placeholder="Amount" class="w-full mb-2 p-2 rounded border" />
+            <button id="add-expense-btn" class="w-full bg-red-600 text-white py-2 rounded">Add Expense</button>
         </div>
 
-        
-        <div id="boxes-wrapper" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    </div>
 
-            
-            <div id="income-box" class="bg-purple-100 p-4 rounded shadow w-full md:w-auto">
-                <h2 class="text-lg font-bold text-purple-800 mb-4">Income</h2>
-                <ul class="income-list space-y-2 mb-4"></ul>
-                <div class="flex flex-col gap-2">
-                    <input type="text" id="add-income" placeholder="Add Income" class="p-2 rounded border" />
-                    <input type="text" id="add-amount" placeholder="Amount" class="p-2 rounded border" />
-                    <button id="add-income-btn"
-                        class="bg-purple-600 text-white p-2 rounded hover:bg-purple-700">Add</button>
-                </div>
-            </div>
+    <div class="mt-6 text-center bg-white p-4 rounded shadow max-w-md mx-auto">
+        <h2 class="text-xl font-bold mb-2">Available Budget</h2>
+        <span id="budget-amount" class="text-2xl font-semibold text-purple-700">$0.00</span>
+    </div>
 
-            
-            <div id="expense-box" class="bg-pink-100 p-4 rounded shadow w-full md:w-auto">
-                <h2 class="text-lg font-bold text-pink-800 mb-4">Expense</h2>
-                <ul class="expense-list space-y-2 mb-4"></ul>
-                <div class="flex flex-col gap-2">
-                    <input type="text" id="add-expense" placeholder="Add Expense" class="p-2 rounded border" />
-                    <input type="text" id="add-e-amount" placeholder="Amount" class="p-2 rounded border" />
-                    <button id="add-expense-btn"
-                        class="bg-pink-600 text-white p-2 rounded hover:bg-pink-700">Add</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="text-center mt-6">
-            <button id="reset-btn" class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700">Reset
-                Inputs</button>
-        </div>
-
-    </main>
+    <div class="text-center mt-4">
+        <button id="reset-btn" class="bg-gray-400 text-white px-4 py-2 rounded">Reset Inputs</button>
+    </div>
 
     <script src="script.js"></script>
 </body>

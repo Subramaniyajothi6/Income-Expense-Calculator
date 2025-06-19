@@ -5,19 +5,16 @@ let incomeList = [];
 let expenseList = [];
 let currentEdit = null;
 
-
 function saveToLocalStorage() {
   localStorage.setItem('incomeData', JSON.stringify(incomeList));
   localStorage.setItem('expenseData', JSON.stringify(expenseList));
 }
-
 
 function updateBudget() {
   const totalIncome = incomeList.reduce((acc, item) => acc + parseFloat(item.amount), 0);
   const totalExpense = expenseList.reduce((acc, item) => acc + parseFloat(item.amount), 0);
   document.getElementById("budget-amount").textContent = `$${(totalIncome - totalExpense).toFixed(2)}`;
 }
-
 
 function renderList(list, containerSelector, type) {
   const container = document.querySelector(containerSelector);
@@ -121,12 +118,12 @@ function renderAll() {
     renderList(incomeList, '.income-list', 'income');
     incomeContainer.style.display = 'block';
     expenseContainer.style.display = 'none';
-    wrapper.className = 'flex justify-center';
+    wrapper.className = 'grid grid-cols-1 w-full';
   } else if (selectedFilter === 'expense') {
     renderList(expenseList, '.expense-list', 'expense');
     incomeContainer.style.display = 'none';
     expenseContainer.style.display = 'block';
-    wrapper.className = 'flex justify-center';
+    wrapper.className = 'grid grid-cols-1 w-full';
   } else {
     renderList(incomeList, '.income-list', 'income');
     renderList(expenseList, '.expense-list', 'expense');
@@ -157,7 +154,6 @@ async function loadData() {
 
   renderAll();
 }
-
 
 window.onload = loadData;
 document.getElementById('add-income-btn').onclick = () => addOrUpdateItem('income');
