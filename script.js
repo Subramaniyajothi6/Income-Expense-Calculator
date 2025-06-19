@@ -1,284 +1,172 @@
+const INCOME_API = 'https://685140bd8612b47a2c094278.mockapi.io/income';
+const EXPENSE_API = 'https://685140bd8612b47a2c094278.mockapi.io/Expense';
+
+let incomeList = [];
+let expenseList = [];
+let currentEdit = null;
 
 
-let income_lists = [];
-let API_URL = `https://685140bd8612b47a2c094278.mockapi.io/income`;
-
-async function fetchTodos() {
-    try {
-        const response = await fetch(API_URL);
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error('Error fetching income data:', error);
-        return [];
-    }
+function saveToLocalStorage() {
+  localStorage.setItem('incomeData', JSON.stringify(incomeList));
+  localStorage.setItem('expenseData', JSON.stringify(expenseList));
 }
 
-function renderTodoList(income_lists) {
-
-    const income_list = document.querySelector('.income-list');
-
-    income_list.innerHTML = '';
-
-    income_lists.forEach(income => {
-
-        const income_item = document.createElement('li');
-        income_item.textContent = `${income.text} : $${income.amount}`;
-
-        const d_btn = document.createElement("button");
-        d_btn.className = "delete-btn";
-        d_btn.textContent = "Remove";
-
-
-        d_btn.onclick = async (e) => {
-            await deleteIncome(e, income.id);
-        };
-
-        income_item.appendChild(d_btn);
-        income_list.appendChild(income_item);
-    });
-
-    console.log('Rendered income list:', income_list);
-}
-
-async function deleteIncome(e, incomeId) {
-    try {
-
-        e.target.parentElement.remove();
-
-        const response = await fetch(`${API_URL}/${incomeId}`, {
-            method: "DELETE",
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-
-        income_lists = income_lists.filter(income => income.id !== incomeId);
-
-        console.log('Income deleted successfully');
-        updateBudget();
-    } catch (error) {
-        console.error('Error deleting income:', error);
-
-        renderTodoList(income_lists);
-    }
-
-    
-}
-
-
-
-
-const add_income_btn = document.getElementById("add-income-btn");
-add_income_btn.onclick = addIncome;
-
-async function addIncome() {
-    const incomeText = document.getElementById("add-income").value.trim();
-    const incomeAmount = document.getElementById("add-amount").value.trim();
-
-    // Input validation
-    if (!incomeText || !incomeAmount) {
-        alert('Please fill in both income description and amount');
-        return;
-    }
-
-    if (isNaN(incomeAmount) || parseFloat(incomeAmount) <= 0) {
-        alert('Please enter a valid positive amount');
-        return;
-    }
-
-    try {
-        const response = await fetch(API_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                text: incomeText,
-                amount: parseFloat(incomeAmount),
-            }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const newIncome = await response.json();
-        console.log('New income added:', newIncome);
-
-        income_lists.push(newIncome);
-        renderTodoList(income_lists);
-
-        document.getElementById("add-income").value = '';
-        document.getElementById("add-amount").value = '';
-        updateBudget();
-    } catch (error) {
-        console.error('Error adding income:', error);
-        alert('Failed to add income. Please try again.');
-    }
-
-    
-}
-
-
-
-
-
-
-
-// ===================================================== Expense  ==================================================== //
-
-
-// Global variables or constants
-let expenseList = []; // Fixed: consistent naming
-let API_URL_expense = `https://685140bd8612b47a2c094278.mockapi.io/Expense`;
-
-async function fetchExpense() {
-    try {
-        const response = await fetch(API_URL_expense);
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error('Error fetching expense data:', error);
-        return [];
-    }
-}
-
-function renderExpenseList(expenseList) {
-
-    const expense_list = document.querySelector('.expense-list');
-
-    expense_list.innerHTML = '';
-
-    // loop through the data
-    expenseList.forEach(expense => {
-
-        const expense_item = document.createElement('li');
-        expense_item.textContent = `${expense.text} : $${expense.amount}`;
-
-        const d_btn = document.createElement("button");
-        d_btn.className = "delete-btn";
-        d_btn.textContent = "Remove";
-
-        d_btn.onclick = async (e) => {
-            await deleteExpense(e, expense.id);
-        };
-
-        expense_item.appendChild(d_btn);
-        expense_list.appendChild(expense_item);
-    });
-
-    console.log('Rendered expense list:', expense_list);
-}
-
-
-async function deleteExpense(e, expenseId) {
-    try {
-
-        e.target.parentElement.remove();
-
-
-        const response = await fetch(`${API_URL_expense}/${expenseId}`, {
-            method: "DELETE",
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-
-        expenseList = expenseList.filter(expense => expense.id !== expenseId);
-
-        console.log('Expense deleted successfully');
-        updateBudget();
-    } catch (error) {
-        console.error('Error deleting expense:', error);
-        renderExpenseList(expenseList);
-    }
-    
-}
-
-
-const add_expense_btn = document.getElementById("add-expense-btn");
-add_expense_btn.onclick = addExpense;
-
-async function addExpense() {
-    const expenseText = document.getElementById("add-expense").value.trim();
-    const expenseAmount = document.getElementById("add-e-amount").value.trim();
-
-    if (!expenseText || !expenseAmount) {
-        alert('Please fill in both expense description and amount');
-        return;
-    }
-
-    if (isNaN(expenseAmount) || parseFloat(expenseAmount) <= 0) {
-        alert('Please enter a valid positive amount');
-        return;
-    }
-
-    try {
-        const response = await fetch(API_URL_expense, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                text: expenseText,
-                amount: parseFloat(expenseAmount),
-            }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const newExpense = await response.json();
-        console.log('New expense added:', newExpense);
-
-        expenseList.push(newExpense);
-        renderExpenseList(expenseList);
-
-        document.getElementById("add-expense").value = '';
-        document.getElementById("add-e-amount").value = '';
-
-        updateBudget();
-    } catch (error) {
-        console.error('Error adding expense:', error);
-        alert('Failed to add expense. Please try again.');
-    }
-    
-}
 
 function updateBudget() {
-    const totalIncome = income_lists.reduce((acc, curr) => acc + parseFloat(curr.amount), 0);
-    const totalExpense = expenseList.reduce((acc, curr) => acc + parseFloat(curr.amount), 0);
-    const balance = totalIncome - totalExpense;
-
-    document.getElementById("budget-amount").textContent = `$${balance.toFixed(2)}`;
+  const totalIncome = incomeList.reduce((acc, item) => acc + parseFloat(item.amount), 0);
+  const totalExpense = expenseList.reduce((acc, item) => acc + parseFloat(item.amount), 0);
+  document.getElementById("budget-amount").textContent = `$${(totalIncome - totalExpense).toFixed(2)}`;
 }
 
 
+function renderList(list, containerSelector, type) {
+  const container = document.querySelector(containerSelector);
+  container.innerHTML = '';
 
-async function Main() {
-    expenseList = await fetchExpense();
-    renderExpenseList(expenseList);    
-    localStorage.setItem('expense_lists', JSON.stringify(expenseList));
-    
-    income_lists = await fetchTodos();
-    renderTodoList(income_lists);
-    localStorage.setItem('income_lists', JSON.stringify(income_lists));
+  list.forEach(item => {
+    const li = document.createElement('li');
+    li.className = 'flex justify-between items-center p-2 bg-pink-100 rounded';
 
-    updateBudget();
+    const span = document.createElement('span');
+    span.textContent = `${item.text} : $${item.amount}`;
+
+    const btnGroup = document.createElement('div');
+    btnGroup.className = 'space-x-2';
+
+    const editBtn = document.createElement('button');
+    editBtn.textContent = 'Edit';
+    editBtn.className = 'bg-yellow-500 text-white px-2 py-1 rounded';
+    editBtn.onclick = () => startEdit(item, type);
+
+    const delBtn = document.createElement('button');
+    delBtn.textContent = 'Remove';
+    delBtn.className = 'bg-red-600 text-white px-2 py-1 rounded';
+    delBtn.onclick = () => deleteItem(item.id, type);
+
+    btnGroup.append(editBtn, delBtn);
+    li.append(span, btnGroup);
+    container.appendChild(li);
+  });
+
+  updateBudget();
 }
 
-Main();
+async function addOrUpdateItem(type) {
+  const textInput = document.getElementById(type === 'income' ? 'add-income' : 'add-expense');
+  const amountInput = document.getElementById(type === 'income' ? 'add-amount' : 'add-e-amount');
+
+  const text = textInput.value.trim();
+  const amount = amountInput.value.trim();
+
+  if (!text || isNaN(amount) || parseFloat(amount) <= 0) {
+    return alert('Please enter valid text and amount');
+  }
+
+  const payload = { text, amount: parseFloat(amount) };
+  const API = type === 'income' ? INCOME_API : EXPENSE_API;
+
+  if (currentEdit && currentEdit.type === type) {
+    const res = await fetch(`${API}/${currentEdit.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const updated = await res.json();
+    const list = type === 'income' ? incomeList : expenseList;
+    const index = list.findIndex(i => i.id === updated.id);
+    list[index] = updated;
+    currentEdit = null;
+  } else {
+    const res = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const newItem = await res.json();
+    if (type === 'income') incomeList.push(newItem);
+    else expenseList.push(newItem);
+  }
+
+  renderAll();
+  saveToLocalStorage();
+  textInput.value = '';
+  amountInput.value = '';
+}
+
+function startEdit(item, type) {
+  currentEdit = { ...item, type };
+  document.getElementById(type === 'income' ? 'add-income' : 'add-expense').value = item.text;
+  document.getElementById(type === 'income' ? 'add-amount' : 'add-e-amount').value = item.amount;
+}
+
+async function deleteItem(id, type) {
+  const API = type === 'income' ? INCOME_API : EXPENSE_API;
+  await fetch(`${API}/${id}`, { method: 'DELETE' });
+
+  if (type === 'income') incomeList = incomeList.filter(i => i.id !== id);
+  else expenseList = expenseList.filter(e => e.id !== id);
+
+  renderAll();
+  saveToLocalStorage();
+}
+
+function renderAll() {
+  const selectedFilter = document.querySelector('input[name="filter"]:checked').value;
+
+  const incomeContainer = document.getElementById('income-box');
+  const expenseContainer = document.getElementById('expense-box');
+  const wrapper = document.getElementById('boxes-wrapper');
+
+  if (selectedFilter === 'income') {
+    renderList(incomeList, '.income-list', 'income');
+    incomeContainer.style.display = 'block';
+    expenseContainer.style.display = 'none';
+    wrapper.className = 'flex justify-center';
+  } else if (selectedFilter === 'expense') {
+    renderList(expenseList, '.expense-list', 'expense');
+    incomeContainer.style.display = 'none';
+    expenseContainer.style.display = 'block';
+    wrapper.className = 'flex justify-center';
+  } else {
+    renderList(incomeList, '.income-list', 'income');
+    renderList(expenseList, '.expense-list', 'expense');
+    incomeContainer.style.display = 'block';
+    expenseContainer.style.display = 'block';
+    wrapper.className = 'grid grid-cols-1 md:grid-cols-2 gap-6';
+  }
+
+  saveToLocalStorage();
+}
+
+async function loadData() {
+  const localIncome = localStorage.getItem('incomeData');
+  const localExpense = localStorage.getItem('expenseData');
+
+  if (localIncome && localExpense) {
+    incomeList = JSON.parse(localIncome);
+    expenseList = JSON.parse(localExpense);
+  } else {
+    const incomeRes = await fetch(INCOME_API);
+    incomeList = await incomeRes.json();
+
+    const expenseRes = await fetch(EXPENSE_API);
+    expenseList = await expenseRes.json();
+
+    saveToLocalStorage();
+  }
+
+  renderAll();
+}
+
+
+window.onload = loadData;
+document.getElementById('add-income-btn').onclick = () => addOrUpdateItem('income');
+document.getElementById('add-expense-btn').onclick = () => addOrUpdateItem('expense');
+document.getElementById('reset-btn').onclick = () => {
+  ['add-income', 'add-amount', 'add-expense', 'add-e-amount'].forEach(id => document.getElementById(id).value = '');
+  currentEdit = null;
+};
+
+document.querySelectorAll('input[name="filter"]').forEach(radio => {
+  radio.addEventListener('change', renderAll);
+});
