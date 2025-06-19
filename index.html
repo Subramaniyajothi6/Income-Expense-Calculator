@@ -1,57 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Income Expense Calculator</title>
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-
-<body class="bg-purple-200 min-h-screen p-4">
-
-    <header class="text-center text-3xl font-bold text-white mb-6">
-        Income Expense Calculator
+  </head>
+  <body class="bg-purple-400 min-h-screen p-6">
+    <header class="text-center mb-6">
+      <h1 class="text-3xl font-bold text-white">Income Expense Calculator</h1>
     </header>
 
-    <div class="flex justify-center mb-4 space-x-4">
-        <label><input type="radio" name="filter" value="all" checked class="mr-1">All</label>
-        <label><input type="radio" name="filter" value="income" class="mr-1">Income</label>
-        <label><input type="radio" name="filter" value="expense" class="mr-1">Expense</label>
-    </div>
+    <main class="max-w-4xl mx-auto bg-white p-6 rounded shadow">
+      <!-- Filters -->
+      <div class="flex justify-center gap-6 mb-6">
+        <label><input type="radio" name="filter" value="all" checked /> All</label>
+        <label><input type="radio" name="filter" value="income" /> Income</label>
+        <label><input type="radio" name="filter" value="expense" /> Expense</label>
+      </div>
 
-    <div id="boxes-wrapper" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-
-        <div id="income-box" class="bg-white p-6 rounded-lg shadow w-full">
-            <h2 class="text-xl font-bold mb-4 text-center">Income</h2>
-            <ul class="income-list space-y-2 mb-4"></ul>
-            <input id="add-income" type="text" placeholder="Description" class="w-full mb-2 p-2 rounded border" />
-            <input id="add-amount" type="text" placeholder="Amount" class="w-full mb-2 p-2 rounded border" />
-            <button id="add-income-btn" class="w-full bg-green-600 text-white py-2 rounded">Add Income</button>
+      <!-- Boxes -->
+      <div id="boxes" class="grid gap-6 md:grid-cols-2">
+        <!-- Income Box -->
+        <div id="income-box" class="bg-pink-200 p-4 rounded shadow">
+          <h2 class="text-xl font-semibold mb-2">Income</h2>
+          <ul class="income-list space-y-2 mb-4"></ul>
+          <input id="add-income" class="w-full p-2 mb-2 border rounded" placeholder="Add income" />
+          <input id="add-amount" class="w-full p-2 mb-2 border rounded" placeholder="Amount" />
+          <button id="add-income-btn" class="w-full bg-green-600 text-white p-2 rounded">Add Income</button>
         </div>
 
-
-        <div id="expense-box" class="bg-white p-6 rounded-lg shadow w-full">
-            <h2 class="text-xl font-bold mb-4 text-center">Expense</h2>
-            <ul class="expense-list space-y-2 mb-4"></ul>
-            <input id="add-expense" type="text" placeholder="Description" class="w-full mb-2 p-2 rounded border" />
-            <input id="add-e-amount" type="text" placeholder="Amount" class="w-full mb-2 p-2 rounded border" />
-            <button id="add-expense-btn" class="w-full bg-red-600 text-white py-2 rounded">Add Expense</button>
+        <!-- Expense Box -->
+        <div id="expense-box" class="bg-pink-200 p-4 rounded shadow">
+          <h2 class="text-xl font-semibold mb-2">Expense</h2>
+          <ul class="expense-list space-y-2 mb-4"></ul>
+          <input id="add-expense" class="w-full p-2 mb-2 border rounded" placeholder="Add expense" />
+          <input id="add-e-amount" class="w-full p-2 mb-2 border rounded" placeholder="Amount" />
+          <button id="add-expense-btn" class="w-full bg-green-600 text-white p-2 rounded">Add Expense</button>
         </div>
+      </div>
 
-    </div>
+      <!-- Budget Box -->
+      <div id="budget-box" class="text-center mt-6">
+        <h2 class="text-2xl font-semibold text-purple-800">Available Budget</h2>
+        <span id="budget-amount" class="text-3xl font-bold text-gray-800">$0.00</span>
+      </div>
 
-    <div class="mt-6 text-center bg-white p-4 rounded shadow max-w-md mx-auto">
-        <h2 class="text-xl font-bold mb-2">Available Budget</h2>
-        <span id="budget-amount" class="text-2xl font-semibold text-purple-700">$0.00</span>
-    </div>
-
-    <div class="text-center mt-4">
-        <button id="reset-btn" class="bg-gray-400 text-white px-4 py-2 rounded">Reset Inputs</button>
-    </div>
+      <!-- Reset -->
+      <div class="mt-4 text-center">
+        <button id="reset-btn" class="bg-gray-700 text-white px-4 py-2 rounded">Reset</button>
+      </div>
+    </main>
 
     <script src="script.js"></script>
-</body>
-
+  </body>
 </html>

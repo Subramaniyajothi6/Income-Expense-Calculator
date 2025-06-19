@@ -5,19 +5,14 @@ let incomeList = [];
 let expenseList = [];
 let currentEdit = null;
 
-function saveToLocalStorage() {
-  localStorage.setItem('incomeData', JSON.stringify(incomeList));
-  localStorage.setItem('expenseData', JSON.stringify(expenseList));
-}
-
 function updateBudget() {
   const totalIncome = incomeList.reduce((acc, item) => acc + parseFloat(item.amount), 0);
   const totalExpense = expenseList.reduce((acc, item) => acc + parseFloat(item.amount), 0);
   document.getElementById("budget-amount").textContent = `$${(totalIncome - totalExpense).toFixed(2)}`;
 }
 
-function renderList(list, containerSelector, type) {
-  const container = document.querySelector(containerSelector);
+function renderList(list, selector, type) {
+  const container = document.querySelector(selector);
   container.innerHTML = '';
 
   list.forEach(item => {
@@ -56,7 +51,7 @@ async function addOrUpdateItem(type) {
   const amount = amountInput.value.trim();
 
   if (!text || isNaN(amount) || parseFloat(amount) <= 0) {
-    return alert('Please enter valid text and amount');
+    return alert('Enter valid text and positive amount');
   }
 
   const payload = { text, amount: parseFloat(amount) };
@@ -84,8 +79,8 @@ async function addOrUpdateItem(type) {
     else expenseList.push(newItem);
   }
 
+  saveToLocal();
   renderAll();
-  saveToLocalStorage();
   textInput.value = '';
   amountInput.value = '';
 }
@@ -103,59 +98,67 @@ async function deleteItem(id, type) {
   if (type === 'income') incomeList = incomeList.filter(i => i.id !== id);
   else expenseList = expenseList.filter(e => e.id !== id);
 
+  saveToLocal();
   renderAll();
-  saveToLocalStorage();
 }
 
 function renderAll() {
-  const selectedFilter = document.querySelector('input[name="filter"]:checked').value;
+  const filter = document.querySelector('input[name="filter"]:checked').value;
 
-  const incomeContainer = document.getElementById('income-box');
-  const expenseContainer = document.getElementById('expense-box');
-  const wrapper = document.getElementById('boxes-wrapper');
+  const incomeBox = document.getElementById('income-box');
+  const expenseBox = document.getElementById('expense-box');
+  const boxContainer = document.getElementById('boxes');
 
-  if (selectedFilter === 'income') {
+  if (filter === 'income') {
+    incomeBox.style.display = 'block';
+    expenseBox.style.display = 'none';
+    boxContainer.classList.remove('md:grid-cols-2');
+    boxContainer.classList.add('grid-cols-1');
     renderList(incomeList, '.income-list', 'income');
-    incomeContainer.style.display = 'block';
-    expenseContainer.style.display = 'none';
-    wrapper.className = 'grid grid-cols-1 w-full';
-  } else if (selectedFilter === 'expense') {
+  } else if (filter === 'expense') {
+    expenseBox.style.display = 'block';
+    incomeBox.style.display = 'none';
+    boxContainer.classList.remove('md:grid-cols-2');
+    boxContainer.classList.add('grid-cols-1');
     renderList(expenseList, '.expense-list', 'expense');
-    incomeContainer.style.display = 'none';
-    expenseContainer.style.display = 'block';
-    wrapper.className = 'grid grid-cols-1 w-full';
   } else {
+    incomeBox.style.display = 'block';
+    expenseBox.style.display = 'block';
+    boxContainer.classList.remove('grid-cols-1');
+    boxContainer.classList.add('md:grid-cols-2');
     renderList(incomeList, '.income-list', 'income');
     renderList(expenseList, '.expense-list', 'expense');
-    incomeContainer.style.display = 'block';
-    expenseContainer.style.display = 'block';
-    wrapper.className = 'grid grid-cols-1 md:grid-cols-2 gap-6';
   }
-
-  saveToLocalStorage();
 }
 
-async function loadData() {
-  const localIncome = localStorage.getItem('incomeData');
-  const localExpense = localStorage.getItem('expenseData');
+function saveToLocal() {
+  localStorage.setItem('incomeList', JSON.stringify(incomeList));
+  localStorage.setItem('expenseList', JSON.stringify(expenseList));
+}
 
-  if (localIncome && localExpense) {
-    incomeList = JSON.parse(localIncome);
-    expenseList = JSON.parse(localExpense);
-  } else {
-    const incomeRes = await fetch(INCOME_API);
-    incomeList = await incomeRes.json();
+function loadFromLocal() {
+  const income = localStorage.getItem('incomeList');
+  const expense = localStorage.getItem('expenseList');
+  if (income) incomeList = JSON.parse(income);
+  if (expense) expenseList = JSON.parse(expense);
+}
 
-    const expenseRes = await fetch(EXPENSE_API);
-    expenseList = await expenseRes.json();
+async function fetchFromAPI() {
+  const res1 = await fetch(INCOME_API);
+  incomeList = await res1.json();
+  const res2 = await fetch(EXPENSE_API);
+  expenseList = await res2.json();
+  saveToLocal();
+}
 
-    saveToLocalStorage();
+window.onload = async () => {
+  loadFromLocal();
+  if (incomeList.length === 0 && expenseList.length === 0) {
+    await fetchFromAPI();
   }
-
   renderAll();
-}
+};
 
-window.onload = loadData;
 document.getElementById('add-income-btn').onclick = () => addOrUpdateItem('income');
 document.getElementById('add-expense-btn').onclick = () => addOrUpdateItem('expense');
 document.getElementById('reset-btn').onclick = () => {
@@ -163,6 +166,4 @@ document.getElementById('reset-btn').onclick = () => {
   currentEdit = null;
 };
 
-document.querySelectorAll('input[name="filter"]').forEach(radio => {
-  radio.addEventListener('change', renderAll);
-});
+document.querySelectorAll('input[name="filter"]').forEach(r => r.addEventListener('change', renderAll));
